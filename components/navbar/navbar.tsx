@@ -1,8 +1,7 @@
 import Link from "next/link";
 
 import { NavbarLinks, MobileNav } from "@/components/navbar/navbar-nav";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ProfileMenu } from "@/components/navbar/profile-menu";
 
 export function Navbar() {
   return (
@@ -20,15 +19,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/#get-started"
-            className={cn(
-              buttonVariants(),
-              "bg-nav-avatar text-nav-avatar-foreground hover:bg-nav-avatar/90",
-            )}
-          >
-            Get started
-          </Link>
+          <ProfileMenu />
           <MobileNav />
         </div>
       </div>
