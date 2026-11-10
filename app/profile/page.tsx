@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { CalendarDays, Mail, ShieldCheck, UserRound } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { formatDate } from "@/lib/formatter";
+import { ROLE_LABELS } from "@/lib/roles";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata = {
   title: "Your profile | Hireloop",
@@ -59,6 +61,7 @@ export default async function ProfilePage() {
               <p className="mt-1 truncate text-sm text-muted-foreground">
                 {user.email}
               </p>
+              <Badge className="mt-2">{ROLE_LABELS[user.role]}</Badge>
             </div>
           </div>
 
@@ -77,6 +80,11 @@ export default async function ProfilePage() {
               icon={CalendarDays}
               label="Member since"
               value={formatDate(user.createdAt)}
+            />
+            <ProfileDetail
+              icon={ShieldCheck}
+              label="Account role"
+              value={ROLE_LABELS[user.role]}
             />
             <ProfileDetail
               icon={ShieldCheck}

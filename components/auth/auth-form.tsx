@@ -3,7 +3,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import {
+  useForm,
+  useWatch,
+  type Control,
+  type UseFormSetValue,
+} from "react-hook-form";
 import { z } from "zod";
 
 import { authClient } from "@/lib/auth-client";
@@ -24,29 +29,34 @@ const signInSchema = z.object({
 
 const signUpSchema = signInSchema.extend({
   name: z.string().min(2, "Name must be at least 2 characters.").max(80),
+  role: z.enum(["seeker", "recruiter"]),
 });
 
-type AuthValues = { name?: string; email: string; password: string };
+type AuthValues = {
+  name?: string;
+  email: string;
+  password: string;
+  role?: "seeker" | "recruiter";
+};
 
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const isSignUp = mode === "sign-up";
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const [googlePending, setGooglePending] = useState(false);
   const form = useForm<AuthValues>({
     resolver: zodResolver(isSignUp ? signUpSchema : signInSchema) as never,
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "", role: "seeker" },
   });
-
   async function onSubmit(values: AuthValues) {
     setServerError(null);
-    setPending(true);
 
     const result = isSignUp
       ? await authClient.signUp.email({
           name: values.name ?? "",
           email: values.email,
           password: values.password,
+          role: values.role ?? "seeker",
           callbackURL: "/",
         })
       : await authClient.signIn.email({
@@ -54,8 +64,6 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
           password: values.password,
           callbackURL: "/",
         });
-    setPending(false);
-
     if (result.error) {
       setServerError(
         result.error.message ?? "Unable to complete authentication.",
@@ -69,13 +77,13 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
   async function onGoogleSignIn() {
     setServerError(null);
-    setPending(true);
+    setGooglePending(true);
     const result = await authClient.signIn.social({
       provider: "google",
       callbackURL: "/",
     });
     if (result.error) {
-      setPending(false);
+      setGooglePending(false);
       setServerError(result.error.message ?? "Unable to continue with Google.");
     }
   }
@@ -86,7 +94,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         type="button"
         variant="outline"
         className="w-full"
-        disabled={pending}
+        disabled={googlePending || form.formState.isSubmitting}
         onClick={onGoogleSignIn}
       >
         <GoogleMark />
@@ -107,6 +115,9 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
               />
               <FieldError errors={[form.formState.errors.name]} />
             </Field>
+          )}
+          {isSignUp && (
+            <RolePicker control={form.control} setValue={form.setValue} />
           )}
           <Field data-invalid={!!form.formState.errors.email}>
             <FieldLabel htmlFor="email">Email address</FieldLabel>
@@ -137,14 +148,59 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
               {serverError}
             </p>
           )}
-          <Button type="submit" className="w-full" disabled={pending}>
-            {pending ? "Please wait…" : isSignUp ? "Create account" : "Sign in"}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={form.formState.isSubmitting || googlePending}
+          >
+            {form.formState.isSubmitting
+              ? "Please wait…"
+              : isSignUp
+                ? "Create account"
+                : "Sign in"}
           </Button>
         </FieldGroup>
       </form>
     </div>
   );
 }
+
+const RolePicker = function RolePicker({
+  control,
+  setValue,
+}: {
+  control: Control<AuthValues>;
+  setValue: UseFormSetValue<AuthValues>;
+}) {
+  const selectedRole = useWatch({ control, name: "role" });
+
+  return (
+    <Field>
+      <FieldLabel id="role-label">I am joining as</FieldLabel>
+      <div
+        role="group"
+        aria-labelledby="role-label"
+        className="grid grid-cols-2 gap-2"
+      >
+        {(["seeker", "recruiter"] as const).map((role) => (
+          <Button
+            key={role}
+            type="button"
+            variant={selectedRole === role ? "default" : "outline"}
+            aria-pressed={selectedRole === role}
+            onClick={() => setValue("role", role)}
+            className="capitalize"
+          >
+            {role}
+          </Button>
+        ))}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        Administrator access is assigned separately.
+      </p>
+    </Field>
+  );
+};
 
 function GoogleMark() {
   return (

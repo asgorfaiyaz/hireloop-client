@@ -5,9 +5,10 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 import { jwt } from "better-auth/plugins";
+import { USER_ROLES } from "@/lib/roles";
 
 const client = new MongoClient(process.env.MONGODB_URI as string);
-const db = client.db();
+export const db = client.db();
 
 export const auth = betterAuth({
   database: mongodbAdapter(db, { client }),
@@ -15,6 +16,16 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: [...USER_ROLES],
+        required: true,
+        defaultValue: "seeker",
+        input: true,
+      },
+    },
   },
 
   socialProviders: {
