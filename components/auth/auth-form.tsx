@@ -21,6 +21,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
 
 const signInSchema = z.object({
   email: z.email("Enter a valid email address."),
@@ -42,49 +43,76 @@ type AuthValues = {
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const isSignUp = mode === "sign-up";
   const router = useRouter();
-  const [serverError, setServerError] = useState<string | null>(null);
   const [googlePending, setGooglePending] = useState(false);
   const form = useForm<AuthValues>({
     resolver: zodResolver(isSignUp ? signUpSchema : signInSchema) as never,
     defaultValues: { name: "", email: "", password: "", role: "seeker" },
   });
   async function onSubmit(values: AuthValues) {
-    setServerError(null);
+    try {
+      const result = isSignUp
+        ? await authClient.signUp.email({
+            name: values.name ?? "",
+            email: values.email,
+            password: values.password,
+            role: values.role ?? "seeker",
+            callbackURL: "/sign-in",
+          })
+        : await authClient.signIn.email({
+            email: values.email,
+            password: values.password,
+          });
 
-    const result = isSignUp
-      ? await authClient.signUp.email({
-          name: values.name ?? "",
-          email: values.email,
-          password: values.password,
-          role: values.role ?? "seeker",
-          callbackURL: "/sign-in",
-        })
-      : await authClient.signIn.email({
-          email: values.email,
-          password: values.password,
-          callbackURL: "/",
+      if (result.error) {
+        toast.add({
+          title: isSignUp ? "Sign-up failed" : "Sign-in failed",
+          description:
+            result.error.message ?? "Unable to complete authentication.",
+          type: "error",
         });
-    if (result.error) {
-      setServerError(
-        result.error.message ?? "Unable to complete authentication.",
-      );
-      return;
-    }
+        return;
+      }
 
-    router.push(isSignUp ? "/sign-in" : "/");
-    router.refresh();
+      toast.add({
+        title: isSignUp ? "Account created" : "Signed in",
+        description: isSignUp
+          ? "Your account is ready. Sign in to continue."
+          : "You’re now signed in to Hireloop.",
+        type: "success",
+        timeout: 5000,
+      });
+      router.replace(isSignUp ? "/sign-in" : "/");
+      router.refresh();
+    } catch {
+      toast.add({
+        title: isSignUp ? "Sign-up failed" : "Sign-in failed",
+        description: "Something went wrong. Please try again.",
+        type: "error",
+      });
+    }
   }
 
   async function onGoogleSignIn() {
-    setServerError(null);
     setGooglePending(true);
-    const result = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
-    if (result.error) {
+    try {
+      const result = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+      if (!result.error) return;
       setGooglePending(false);
-      setServerError(result.error.message ?? "Unable to continue with Google.");
+      toast.add({
+        title: "Google sign-in failed",
+        description: result.error.message ?? "Unable to continue with Google.",
+        type: "error",
+      });
+    } catch {
+      setGooglePending(false);
+      toast.add({
+        title: "Google sign-in failed",
+        description: "Something went wrong. Please try again.",
+        type: "error",
+      });
     }
   }
 
@@ -143,11 +171,6 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
             />
             <FieldError errors={[form.formState.errors.password]} />
           </Field>
-          {serverError && (
-            <p role="alert" className="text-sm text-destructive">
-              {serverError}
-            </p>
-          )}
           <Button
             type="submit"
             className="w-full"

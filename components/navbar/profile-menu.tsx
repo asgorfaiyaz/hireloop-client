@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import { ROLE_LABELS } from "@/lib/roles";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "@/components/ui/toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,9 +55,32 @@ export function ProfileMenu() {
     .toUpperCase();
 
   async function handleSignOut() {
-    await authClient.signOut();
-    router.push("/");
-    router.refresh();
+    try {
+      const result = await authClient.signOut();
+      if (result.error) {
+        toast.add({
+          title: "Sign-out failed",
+          description: result.error.message ?? "Please try again.",
+          type: "error",
+        });
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
+      toast.add({
+        title: "Signed out",
+        description: "You’ve been signed out of Hireloop.",
+        type: "success",
+        timeout: 5000,
+      });
+    } catch {
+      toast.add({
+        title: "Sign-out failed",
+        description: "Something went wrong. Please try again.",
+        type: "error",
+      });
+    }
   }
 
   return (
