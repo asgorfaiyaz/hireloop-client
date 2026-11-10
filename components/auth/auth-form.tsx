@@ -57,7 +57,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
           email: values.email,
           password: values.password,
           role: values.role ?? "seeker",
-          callbackURL: "/",
+          callbackURL: "/sign-in",
         })
       : await authClient.signIn.email({
           email: values.email,
@@ -71,7 +71,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
       return;
     }
 
-    router.push("/");
+    router.push(isSignUp ? "/sign-in" : "/");
     router.refresh();
   }
 

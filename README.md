@@ -2,18 +2,6 @@
 
 Hireloop is a Next.js application for managing hiring workflows.
 
-## Development
+## What I learned
 
-```sh
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the app.
-
-## Scripts
-
-- `npm run dev` starts the development server.
-- `npm run build` creates a production build.
-- `npm run start` serves the production build.
-- `npm run lint` checks the codebase with ESLint.
+- **React Hook Form — `useWatch`:** Subscribe a component to a specific form value. In the sign-up form, the role picker watches `role` so it can update the selected button when the user switches between Seeker and Recruiter. Keeping the subscription inside the picker helps avoid rerendering the parent form just to update that selection.
