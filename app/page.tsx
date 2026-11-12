@@ -1,6 +1,9 @@
+import { Navbar } from "@/components/navbar/navbar";
+
 export default function Home() {
   return (
     <main className="flex flex-1 items-center justify-center p-6">
+      <Navbar />
       <div className="text-center">
         <p className="font-heading text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
           Hireloop
