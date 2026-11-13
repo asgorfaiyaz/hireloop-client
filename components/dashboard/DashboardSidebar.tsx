@@ -6,8 +6,10 @@ import {
   Bookmark,
   BriefcaseBusiness,
   ClipboardList,
+  CirclePlus,
   FileText,
   LayoutDashboard,
+  Settings,
   Users,
 } from "lucide-react";
 import type { UserRole } from "@/lib/roles";
@@ -39,11 +41,30 @@ const navigationByRole = {
     },
   ],
   recruiter: [
-    { label: "Jobs", href: "/dashboard/recruiter", icon: BriefcaseBusiness },
+    {
+      label: "Overview",
+      href: "/dashboard/recruiter",
+      icon: LayoutDashboard,
+    },
+    {
+      label: "Add Job",
+      href: "/dashboard/recruiter/jobs/new",
+      icon: CirclePlus,
+    },
+    {
+      label: "Manage Jobs",
+      href: "/dashboard/recruiter/jobs",
+      icon: BriefcaseBusiness,
+    },
     {
       label: "Applicants",
       href: "/dashboard/recruiter/applicants",
       icon: ClipboardList,
+    },
+    {
+      label: "Settings",
+      href: "/dashboard/recruiter/settings",
+      icon: Settings,
     },
   ],
   admin: [
@@ -68,24 +89,41 @@ export default function DashboardSidebar({
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar
+      collapsible="icon"
+      className={role === "recruiter" ? "bg-[#090909] text-white" : undefined}
+    >
       <SidebarHeader>
         <Link
           href={`/dashboard/${role}`}
-          className="px-2 py-2 text-lg font-semibold"
+          className="px-2 py-2 text-lg font-semibold tracking-tight"
         >
-          HireLoop
+          {role === "recruiter" ? (
+            <><span className="text-sky-400">hire</span><span className="text-orange-400">loop</span></>
+          ) : "HireLoop"}
         </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{ROLE_LABELS[role]} dashboard</SidebarGroupLabel>
+          {role !== "recruiter" && <SidebarGroupLabel>{ROLE_LABELS[role]} dashboard</SidebarGroupLabel>}
+          {role === "recruiter" && (
+            <div className="mb-3 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-sm font-semibold text-violet-200">
+                {name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()}
+              </div>
+              <div className="min-w-0">
+                <div className="truncate text-sm font-medium text-white">{name}</div>
+                <div className="text-xs text-zinc-400">Recruiter</div>
+              </div>
+            </div>
+          )}
           <SidebarMenu>
             {navigationByRole[role].map(({ label, href, icon: Icon }) => {
               const active =
                 pathname === href ||
                 (href !== `/dashboard/${role}` &&
-                  pathname.startsWith(`${href}/`));
+                  pathname.startsWith(`${href}/`) &&
+                  !(role === "recruiter" && href === "/dashboard/recruiter/jobs" && pathname.startsWith("/dashboard/recruiter/jobs/new")));
 
               return (
                 <SidebarMenuItem key={href}>
@@ -97,6 +135,7 @@ export default function DashboardSidebar({
                       />
                     }
                     isActive={active}
+                    className={role === "recruiter" ? "text-zinc-400 hover:bg-white/10 hover:text-white data-active:bg-white/10 data-active:text-white" : undefined}
                     tooltip={label}
                   >
                     <Icon aria-hidden="true" />
@@ -109,10 +148,12 @@ export default function DashboardSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <div className="truncate px-2 py-2 text-sm">
-          <div className="truncate font-medium">{name}</div>
-          <div className="text-muted-foreground">{ROLE_LABELS[role]}</div>
-        </div>
+        {role !== "recruiter" && (
+          <div className="truncate px-2 py-2 text-sm">
+            <div className="truncate font-medium">{name}</div>
+            <div className="text-muted-foreground">{ROLE_LABELS[role]}</div>
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

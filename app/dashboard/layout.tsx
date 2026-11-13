@@ -11,7 +11,7 @@ export default async function DashboardLayout({
   const { user, role } = await getDashboardUser();
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className={"dark"}>
       <DashboardSidebar role={role} name={user.name} />
       <main className="min-w-0 flex-1">
         <SidebarTrigger />
