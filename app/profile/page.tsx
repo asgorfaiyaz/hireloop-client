@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { formatDate } from "@/lib/formatter";
 import { ROLE_LABELS } from "@/lib/roles";
 import { Badge } from "@/components/ui/badge";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata = {
   title: "Your profile | Hireloop",
@@ -32,13 +33,16 @@ export default async function ProfilePage() {
   return (
     <main className="flex-1 px-5 py-12 sm:px-8 sm:py-16">
       <div className="mx-auto max-w-4xl">
-        <div className="mb-8">
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight">
             Your profile
           </h1>
           <p className="mt-2 text-muted-foreground">
             Your Hireloop account information.
           </p>
+          </div>
+          <ThemeToggle />
         </div>
 
         <section className="overflow-hidden rounded-3xl border bg-card shadow-sm">

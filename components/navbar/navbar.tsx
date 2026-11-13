@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { NavbarLinks, MobileNav } from "@/components/navbar/navbar-nav";
 import { ProfileMenu } from "@/components/navbar/profile-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navbar() {
   return (
@@ -19,6 +20,7 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <ProfileMenu />
           <MobileNav />
         </div>

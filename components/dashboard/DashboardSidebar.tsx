@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { UserRole } from "@/lib/roles";
 import { ROLE_LABELS } from "@/lib/roles";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -91,7 +92,7 @@ export default function DashboardSidebar({
   return (
     <Sidebar
       collapsible="icon"
-      className={role === "recruiter" ? "bg-[#090909] text-white" : undefined}
+      className="bg-sidebar text-sidebar-foreground"
     >
       <SidebarHeader>
         <Link
@@ -107,13 +108,13 @@ export default function DashboardSidebar({
         <SidebarGroup>
           {role !== "recruiter" && <SidebarGroupLabel>{ROLE_LABELS[role]} dashboard</SidebarGroupLabel>}
           {role === "recruiter" && (
-            <div className="mb-3 flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-violet-500/20 text-sm font-semibold text-violet-200">
+            <div className="mb-3 flex items-center gap-3 rounded-xl border border-sidebar-border bg-sidebar-accent/60 p-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
                 {name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase()}
               </div>
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-white">{name}</div>
-                <div className="text-xs text-zinc-400">Recruiter</div>
+                <div className="truncate text-sm font-medium text-sidebar-foreground">{name}</div>
+                <div className="text-xs text-muted-foreground">Recruiter</div>
               </div>
             </div>
           )}
@@ -135,7 +136,7 @@ export default function DashboardSidebar({
                       />
                     }
                     isActive={active}
-                    className={role === "recruiter" ? "text-zinc-400 hover:bg-white/10 hover:text-white data-active:bg-white/10 data-active:text-white" : undefined}
+                    className="text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground"
                     tooltip={label}
                   >
                     <Icon aria-hidden="true" />
@@ -148,12 +149,17 @@ export default function DashboardSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {role !== "recruiter" && (
-          <div className="truncate px-2 py-2 text-sm">
+        <div className="flex items-center justify-between gap-2 px-2 py-2">
+          {role !== "recruiter" ? (
+            <div className="min-w-0 truncate text-sm group-data-[collapsible=icon]:hidden">
             <div className="truncate font-medium">{name}</div>
             <div className="text-muted-foreground">{ROLE_LABELS[role]}</div>
-          </div>
-        )}
+            </div>
+          ) : (
+            <span className="text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">Appearance</span>
+          )}
+          <ThemeToggle />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

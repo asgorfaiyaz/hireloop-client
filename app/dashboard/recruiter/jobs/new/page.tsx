@@ -19,14 +19,14 @@ import { Input } from "@/components/ui/input";
 import { JOB_TYPES, jobSchema, type JobFormValues } from "@/lib/schemas/job";
 
 const controlClassName =
-  "h-11 rounded-xl border-white/[0.04] bg-white/[0.055] px-4 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:border-violet-500 focus-visible:ring-violet-500/30";
+  "h-11 rounded-xl border-input bg-muted px-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/30";
 const selectClassName = `${controlClassName} w-full appearance-none pr-10 outline-none focus-visible:ring-2`;
-const labelClassName = "text-sm font-normal text-zinc-200";
+const labelClassName = "text-sm font-normal text-foreground/85";
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="flex items-center gap-2.5 text-base font-medium text-white">
-      <span className="size-2 rounded-full bg-violet-500" aria-hidden="true" />
+    <h2 className="flex items-center gap-2.5 text-base font-medium text-card-foreground">
+      <span className="size-2 rounded-full bg-primary" aria-hidden="true" />
       {children}
     </h2>
   );
@@ -35,7 +35,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 function SelectChevron() {
   return (
     <ChevronDown
-      className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+      className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
       aria-hidden="true"
     />
   );
@@ -69,32 +69,32 @@ export default function NewRecruiterJobPage() {
   };
 
   return (
-    <div className="min-h-[calc(100svh-2.5rem)] bg-[#111113] px-4 pb-12 text-zinc-100 sm:px-6 lg:px-8">
+    <div className="min-h-[calc(100svh-2.5rem)] bg-background px-4 pb-12 text-foreground sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mx-auto max-w-[1200px]"
       >
-        <header className="flex flex-col gap-5 border-b border-white/[0.06] pb-6 pt-7 sm:flex-row sm:items-center sm:justify-between sm:pt-10">
+        <header className="flex flex-col gap-5 border-b border-border pb-6 pt-7 sm:flex-row sm:items-center sm:justify-between sm:pt-10">
           <div>
             <nav
               aria-label="Breadcrumb"
-              className="mb-2 flex items-center gap-1 text-xs text-zinc-400"
+              className="mb-2 flex items-center gap-1 text-xs text-muted-foreground"
             >
               <Link
-                className="transition-colors hover:text-white"
+                className="transition-colors hover:text-foreground"
                 href="/dashboard/recruiter/jobs"
               >
                 Manage Jobs
               </Link>
               <ChevronRight className="size-3.5" aria-hidden="true" />
-              <span className="text-violet-300" aria-current="page">
+              <span className="text-primary" aria-current="page">
                 Create New Listing
               </span>
             </nav>
-            <h1 className="text-3xl font-medium tracking-tight text-white sm:text-[34px]">
+            <h1 className="text-3xl font-medium tracking-tight text-foreground sm:text-[34px]">
               Post a New Job
             </h1>
-            <p className="mt-1.5 text-sm text-zinc-400">
+            <p className="mt-1.5 text-sm text-muted-foreground">
               Fill in the position specifications to attract qualified talent
               across our network.
             </p>
@@ -102,19 +102,19 @@ export default function NewRecruiterJobPage() {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-11 rounded-xl bg-violet-600 px-6 font-semibold text-white shadow-[0_8px_24px_rgba(99,75,255,0.24)] hover:bg-violet-500"
+            className="h-11 rounded-xl bg-primary px-6 font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90"
           >
             Publish Job <ArrowRight className="size-4" aria-hidden="true" />
           </Button>
         </header>
 
         <div className="space-y-5 pt-6">
-          <section className="space-y-5 rounded-2xl bg-[#151517] p-5 sm:p-6">
+          <section className="space-y-5 rounded-2xl border border-border bg-card p-5 text-card-foreground sm:p-6">
             <SectionHeading>1. Basic Information</SectionHeading>
             <div className="space-y-4">
               <Field>
                 <FieldLabel htmlFor="title" className={labelClassName}>
-                  Job Title <span className="text-violet-400">*</span>
+                  Job Title <span className="text-primary">*</span>
                 </FieldLabel>
                 <Input
                   id="title"
@@ -128,11 +128,11 @@ export default function NewRecruiterJobPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor="companyName" className={labelClassName}>
-                    Company Name <span className="text-violet-400">*</span>
+                    Company Name <span className="text-primary">*</span>
                   </FieldLabel>
                   <div className="relative">
                     <Building2
-                      className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+                      className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                       aria-hidden="true"
                     />
                     <Input
@@ -147,7 +147,7 @@ export default function NewRecruiterJobPage() {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="category" className={labelClassName}>
-                    Job Category <span className="text-violet-400">*</span>
+                    Job Category <span className="text-primary">*</span>
                   </FieldLabel>
                   <div className="relative">
                     <select
@@ -175,7 +175,7 @@ export default function NewRecruiterJobPage() {
               </div>
               <Field>
                 <FieldLabel className={labelClassName}>
-                  Job Type <span className="text-violet-400">*</span>
+                  Job Type <span className="text-primary">*</span>
                 </FieldLabel>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {JOB_TYPES.map((jobType) => (
@@ -186,7 +186,7 @@ export default function NewRecruiterJobPage() {
                         value={jobType}
                         {...register("jobType")}
                       />
-                      <span className="flex h-11 items-center justify-center rounded-xl bg-white/[0.055] px-3 text-sm text-zinc-400 transition-colors peer-checked:bg-white/[0.08] peer-checked:text-white peer-checked:ring-1 peer-checked:ring-violet-500 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-400">
+                      <span className="flex h-11 items-center justify-center rounded-xl bg-muted px-3 text-sm text-muted-foreground transition-colors peer-checked:bg-accent peer-checked:text-accent-foreground peer-checked:ring-1 peer-checked:ring-primary peer-focus-visible:ring-2 peer-focus-visible:ring-ring">
                         {jobType}
                       </span>
                     </label>
@@ -197,19 +197,19 @@ export default function NewRecruiterJobPage() {
             </div>
           </section>
 
-          <section className="space-y-5 rounded-2xl bg-[#151517] p-5 sm:p-6">
+          <section className="space-y-5 rounded-2xl border border-border bg-card p-5 text-card-foreground sm:p-6">
             <SectionHeading>
               2. Location, Compensation &amp; Timeline
             </SectionHeading>
-            <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-white/[0.055] p-4">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/15 text-violet-300">
+            <label className="flex cursor-pointer items-center gap-3 rounded-xl bg-muted p-4">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Globe2 className="size-4" aria-hidden="true" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm text-white">
+                <span className="block text-sm text-foreground">
                   Remote work allowed
                 </span>
-                <span className="mt-0.5 block text-xs text-zinc-400">
+                <span className="mt-0.5 block text-xs text-muted-foreground">
                   Enable worldwide or distributed candidate applications
                 </span>
               </span>
@@ -220,7 +220,7 @@ export default function NewRecruiterJobPage() {
               />
               <span
                 aria-hidden="true"
-                className="relative h-6 w-11 rounded-full bg-zinc-700 transition-colors after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-white after:transition-transform peer-checked:bg-violet-600 peer-checked:after:translate-x-5 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-400"
+                className="relative h-6 w-11 rounded-full bg-secondary transition-colors after:absolute after:left-1 after:top-1 after:size-4 after:rounded-full after:bg-primary-foreground after:transition-transform peer-checked:bg-primary peer-checked:after:translate-x-5 peer-focus-visible:ring-2 peer-focus-visible:ring-ring"
               />
             </label>
             <div className="grid gap-4 md:grid-cols-2">
@@ -228,15 +228,15 @@ export default function NewRecruiterJobPage() {
                 <div className="flex items-center justify-between gap-2">
                   <FieldLabel htmlFor="location" className={labelClassName}>
                     Job Location{" "}
-                    {!isRemote && <span className="text-violet-400">*</span>}
+                    {!isRemote && <span className="text-primary">*</span>}
                   </FieldLabel>
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-muted-foreground">
                     {isRemote ? "Optional for remote roles" : "Required"}
                   </span>
                 </div>
                 <div className="relative">
                   <MapPin
-                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                   />
                   <Input
@@ -252,18 +252,18 @@ export default function NewRecruiterJobPage() {
               <Field>
                 <FieldLabel htmlFor="deadline" className={labelClassName}>
                   Application Deadline{" "}
-                  <span className="text-violet-400">*</span>
+                  <span className="text-primary">*</span>
                 </FieldLabel>
                 <div className="relative">
                   <CalendarDays
-                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                   />
                   <Input
                     id="deadline"
                     type="date"
                     aria-invalid={!!errors.deadline}
-                    className={`${controlClassName} pl-10 [color-scheme:dark]`}
+                    className={`${controlClassName} pl-10`}
                     {...register("deadline")}
                   />
                 </div>
@@ -277,7 +277,7 @@ export default function NewRecruiterJobPage() {
                 </FieldLabel>
                 <div className="relative">
                   <CircleDollarSign
-                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                   />
                   <Input
@@ -302,7 +302,7 @@ export default function NewRecruiterJobPage() {
                 </FieldLabel>
                 <div className="relative">
                   <CircleDollarSign
-                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-zinc-400"
+                    className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
                     aria-hidden="true"
                   />
                   <Input
@@ -341,20 +341,20 @@ export default function NewRecruiterJobPage() {
             </div>
           </section>
 
-          <section className="space-y-5 rounded-2xl bg-[#151517] p-5 sm:p-6">
+          <section className="space-y-5 rounded-2xl border border-border bg-card p-5 text-card-foreground sm:p-6">
             <SectionHeading>
               3. Responsibilities &amp; Requirements
             </SectionHeading>
             <Field>
               <FieldLabel htmlFor="responsibilities" className={labelClassName}>
-                Key Responsibilities <span className="text-violet-400">*</span>
+                Key Responsibilities <span className="text-primary">*</span>
               </FieldLabel>
               <textarea
                 id="responsibilities"
                 rows={4}
                 placeholder="Describe the key responsibilities for this role..."
                 aria-invalid={!!errors.responsibilities}
-                className="w-full resize-y rounded-xl border border-white/[0.04] bg-white/[0.055] px-4 py-3 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-500 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 aria-[invalid=true]:border-destructive"
+                className="w-full resize-y rounded-xl border border-input bg-muted px-4 py-3 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 aria-[invalid=true]:border-destructive"
                 {...register("responsibilities")}
               />
               <FieldError errors={[errors.responsibilities]} />
@@ -362,14 +362,14 @@ export default function NewRecruiterJobPage() {
             <Field>
               <FieldLabel htmlFor="qualifications" className={labelClassName}>
                 Qualifications &amp; Requirements{" "}
-                <span className="text-violet-400">*</span>
+                <span className="text-primary">*</span>
               </FieldLabel>
               <textarea
                 id="qualifications"
                 rows={4}
                 placeholder="List the experience, skills, and qualifications candidates need..."
                 aria-invalid={!!errors.qualifications}
-                className="w-full resize-y rounded-xl border border-white/[0.04] bg-white/[0.055] px-4 py-3 text-sm leading-relaxed text-zinc-100 outline-none placeholder:text-zinc-500 focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/30 aria-[invalid=true]:border-destructive"
+                className="w-full resize-y rounded-xl border border-input bg-muted px-4 py-3 text-sm leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 aria-[invalid=true]:border-destructive"
                 {...register("qualifications")}
               />
               <FieldError errors={[errors.qualifications]} />
