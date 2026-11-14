@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, type FieldPath } from "react-hook-form";
 import {
   ArrowRight,
   Building2,
@@ -16,6 +16,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/toast";
+import { createJob } from "@/lib/actions/jobs";
 import { JOB_TYPES, jobSchema, type JobFormValues } from "@/lib/schemas/job";
 
 const controlClassName =
@@ -46,6 +48,7 @@ export default function NewRecruiterJobPage() {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<JobFormValues>({
     resolver: zodResolver(jobSchema) as never,
@@ -65,7 +68,21 @@ export default function NewRecruiterJobPage() {
   const isRemote = useWatch({ control, name: "isRemote" });
 
   const onSubmit = async (data: JobFormValues) => {
-    console.log(data);
+    const result = await createJob(data);
+    toast.add({
+      title: result.success ? "Job published" : "Could not publish job",
+      description: result.message,
+      type: result.success ? "success" : "error",
+    });
+
+    if (!result.success && result.fieldErrors) {
+      for (const [field, message] of Object.entries(result.fieldErrors)) {
+        setError(field as FieldPath<JobFormValues>, {
+          type: "server",
+          message,
+        });
+      }
+    }
   };
 
   return (
@@ -104,7 +121,10 @@ export default function NewRecruiterJobPage() {
             disabled={isSubmitting}
             className="h-11 rounded-xl bg-primary px-6 font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:bg-primary/90"
           >
-            Publish Job <ArrowRight className="size-4" aria-hidden="true" />
+            {isSubmitting ? "Publishing..." : "Publish Job"}{" "}
+            {!isSubmitting && (
+              <ArrowRight className="size-4" aria-hidden="true" />
+            )}
           </Button>
         </header>
 
@@ -251,8 +271,7 @@ export default function NewRecruiterJobPage() {
               </Field>
               <Field>
                 <FieldLabel htmlFor="deadline" className={labelClassName}>
-                  Application Deadline{" "}
-                  <span className="text-primary">*</span>
+                  Application Deadline <span className="text-primary">*</span>
                 </FieldLabel>
                 <div className="relative">
                   <CalendarDays
