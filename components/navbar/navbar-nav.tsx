@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Compass, Home, Menu, X } from "lucide-react";
+import { BriefcaseBusiness, Building2, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -14,8 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigationItems = [
-  { label: "Overview", href: "/", icon: Home },
-  { label: "Discover jobs", href: "/#jobs", icon: Compass },
+  { label: "Home", href: "/", icon: Building2 },
+  { label: "Browse Jobs", href: "/discover-jobs", icon: BriefcaseBusiness },
 ] as const;
 
 function isActive(pathname: string, href: string) {
@@ -56,7 +57,7 @@ export function NavbarLinks({
                 : "text-nav-muted hover:bg-nav-hover hover:text-nav-foreground",
             )}
           >
-            <Icon className="size-4" aria-hidden="true" />
+            {mobile && <Icon className="size-4" aria-hidden="true" />}
             <span>{label}</span>
           </Link>
         );
@@ -84,8 +85,14 @@ export function MobileNav() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent aria-label="Mobile navigation">
           <div className="flex items-center justify-between">
-            <SheetTitle className="font-heading text-sm tracking-[0.2em]">
-              HIRELOOP
+            <SheetTitle>
+              <Image
+                src="/images/logo.png"
+                alt="Hireloop"
+                width={152}
+                height={38}
+                className="h-[38px] w-[152px] object-contain"
+              />
             </SheetTitle>
             <SheetClose
               render={

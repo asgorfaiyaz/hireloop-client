@@ -37,12 +37,20 @@ export function ProfileMenu() {
 
   if (!session) {
     return (
-      <Link
-        href="/sign-up"
-        className="inline-flex h-9 items-center justify-center rounded-md bg-nav-avatar px-4 text-sm font-medium text-nav-avatar-foreground transition-colors hover:bg-nav-avatar/90"
-      >
-        Get started
-      </Link>
+      <div className="flex items-center gap-1">
+        <Link
+          href="/sign-in"
+          className="inline-flex h-9 items-center justify-center rounded-lg px-3 text-sm font-semibold text-primary transition-colors hover:bg-nav-hover"
+        >
+          Sign In
+        </Link>
+        <Link
+          href="/sign-up"
+          className="inline-flex h-9 items-center justify-center rounded-lg bg-nav-avatar px-4 text-sm font-medium text-nav-avatar-foreground transition-colors hover:bg-nav-avatar/90 max-[440px]:hidden lg:inline-flex"
+        >
+          Get started
+        </Link>
+      </div>
     );
   }
 
