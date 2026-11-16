@@ -40,7 +40,13 @@ type AuthValues = {
   role?: "seeker" | "recruiter";
 };
 
-export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
+export function AuthForm({
+  mode,
+  redirectTo = "/",
+}: {
+  mode: "sign-in" | "sign-up";
+  redirectTo?: string;
+}) {
   const isSignUp = mode === "sign-up";
   const router = useRouter();
   const [googlePending, setGooglePending] = useState(false);
@@ -81,7 +87,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         type: "success",
         timeout: 5000,
       });
-      router.replace(isSignUp ? "/sign-in" : "/");
+      router.replace(isSignUp ? "/sign-in" : redirectTo);
       router.refresh();
     } catch {
       toast.add({
@@ -97,7 +103,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: isSignUp ? "/" : redirectTo,
       });
       if (!result.error) return;
       setGooglePending(false);
