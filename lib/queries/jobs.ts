@@ -72,6 +72,25 @@ export async function getJobs(query?: string): Promise<{
     return { jobs: [], error: "Could not connect to the job service." };
   }
 }
+export async function getBrowseJobs(query?: string): Promise<{
+  jobs: JobListing[];
+  error?: string;
+}> {
+  try {
+    const response = await fetch(`${JOBS_API_URL}?${query}`, {
+      cache: "no-store",
+    });
+    if (!response.ok)
+      return { jobs: [], error: "Could not load job listings." };
+
+    const data: ApiJob[] = await response.json();
+    return {
+      jobs: data.map(formatJob),
+    };
+  } catch {
+    return { jobs: [], error: "Could not connect to the job service." };
+  }
+}
 
 export async function getJobById(
   id: string,
@@ -83,6 +102,22 @@ export async function getJobById(
   try {
     const response = await fetch(`${JOBS_API_URL}/${encodeURIComponent(id)}`, {
       headers: { Authorization: `Bearer ${auth.token}` },
+      cache: "no-store",
+    });
+    if (!response.ok) return { job: null, error: "Could not load this job." };
+
+    return { job: formatJob((await response.json()) as ApiJob) };
+  } catch {
+    return { job: null, error: "Could not connect to the job service." };
+  }
+}
+export async function getBrowseJobById(
+  id: string,
+): Promise<{ job: JobListing | null; error?: string }> {
+  if (!id) return { job: null, error: "A job ID is required." };
+
+  try {
+    const response = await fetch(`${JOBS_API_URL}/${encodeURIComponent(id)}`, {
       cache: "no-store",
     });
     if (!response.ok) return { job: null, error: "Could not load this job." };

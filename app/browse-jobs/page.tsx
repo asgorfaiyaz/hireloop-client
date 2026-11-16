@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { io } from "next/cache";
 import { Navbar } from "@/components/navbar/navbar";
 import {
   BrowseJobFilters,
@@ -12,7 +13,7 @@ import {
   BrowseJobsSearch,
   BrowseJobsSearchFallback,
 } from "@/components/browse-jobs/browse-jobs-search";
-import { getJobs } from "@/lib/queries/jobs";
+import { getBrowseJobs } from "@/lib/queries/jobs";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -32,7 +33,8 @@ async function BrowseJobResults({
   }
 
   const query = params.toString();
-  const { jobs } = await getJobs(query);
+  await io();
+  const { jobs } = await getBrowseJobs(query);
   return <BrowseJobList jobs={jobs} />;
 }
 

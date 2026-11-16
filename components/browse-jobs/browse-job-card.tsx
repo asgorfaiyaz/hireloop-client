@@ -6,6 +6,7 @@ import {
   MapPin,
   Star,
 } from "lucide-react";
+import Link from "next/link";
 import type { JobListing } from "@/lib/queries/jobs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,7 +58,12 @@ export function BrowseJobCard({ job }: { job: JobListing }) {
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <h2 className="truncate text-lg font-semibold tracking-tight sm:text-xl">
-                {job.title}
+                <Link
+                  href={`/browse-jobs/${encodeURIComponent(job.id)}`}
+                  className="rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {job.title}
+                </Link>
               </h2>
               <p className="mt-1 truncate text-sm font-medium text-muted-foreground sm:text-base">
                 {job.companyName}
