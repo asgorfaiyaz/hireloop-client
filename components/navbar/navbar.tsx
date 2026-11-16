@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -25,7 +26,9 @@ export function Navbar() {
           />
         </Link>
         <div className="hidden min-w-0 items-center gap-2 lg:flex">
-          <NavbarLinks />
+          <Suspense fallback={<div aria-hidden="true" className="h-9 w-40" />}>
+            <NavbarLinks />
+          </Suspense>
           <span aria-hidden="true" className="mx-1 h-6 w-px bg-nav-border" />
           <ThemeToggle />
           <ProfileMenu />

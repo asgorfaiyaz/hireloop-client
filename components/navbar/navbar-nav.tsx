@@ -107,7 +107,9 @@ export function MobileNav() {
             </SheetClose>
           </div>
           <div className="mt-8">
-            <NavbarLinks mobile onSelect={() => setOpen(false)} />
+            <React.Suspense fallback={null}>
+              <NavbarLinks mobile onSelect={() => setOpen(false)} />
+            </React.Suspense>
           </div>
         </SheetContent>
       </Sheet>
