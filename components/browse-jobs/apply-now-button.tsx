@@ -10,9 +10,13 @@ import { createApplication } from "@/lib/actions/applications";
 export function ApplyNowButton({
   jobId,
   returnTo,
+  hasApplied,
+  statusError,
 }: {
   jobId: string;
   returnTo: string;
+  hasApplied: boolean;
+  statusError?: string;
 }) {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
@@ -34,17 +38,27 @@ export function ApplyNowButton({
         description: result.message,
         type: result.success ? "success" : "error",
       });
+      if (result.success) router.refresh();
     });
   }
+
+  const disabled = isPending || isSubmitting || hasApplied || Boolean(statusError);
 
   return (
     <Button
       type="button"
-      disabled={isPending || isSubmitting}
+      disabled={disabled}
+      title={statusError}
       className="h-11 px-5 bg-foreground text-background hover:bg-foreground/90"
       onClick={handleApply}
     >
-      {isSubmitting ? "Submitting…" : "Apply Now"}
+      {hasApplied
+        ? "Applied"
+        : statusError
+          ? "Status unavailable"
+          : isSubmitting
+            ? "Submitting…"
+            : "Apply Now"}
     </Button>
   );
 }

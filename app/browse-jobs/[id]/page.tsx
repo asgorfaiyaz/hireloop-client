@@ -16,6 +16,7 @@ import { Navbar } from "@/components/navbar/navbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { checkSeekerApplication } from "@/lib/queries/applications";
 import { getBrowseJobById } from "@/lib/queries/jobs";
 import {
   formatCompensation,
@@ -88,6 +89,7 @@ async function JobDetailsContent({
     );
   }
 
+  const applicationStatus = await checkSeekerApplication(job.id);
   const companyInitials = job.companyName
     .split(/\s+/)
     .map((part) => part[0])
@@ -132,6 +134,8 @@ async function JobDetailsContent({
             <ApplyNowButton
               jobId={job.id}
               returnTo={`/browse-jobs/${encodeURIComponent(job.id)}`}
+              hasApplied={applicationStatus.hasApplied}
+              statusError={applicationStatus.error}
             />
           </div>
         </div>

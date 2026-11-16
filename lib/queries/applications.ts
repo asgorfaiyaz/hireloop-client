@@ -49,7 +49,10 @@ export async function getSeekerApplications(): Promise<{
     const session = await auth.api.getSession({ headers: requestHeaders });
 
     if (!session) {
-      return { applications: [], error: "Please sign in to view applications." };
+      return {
+        applications: [],
+        error: "Please sign in to view applications.",
+      };
     }
     if (session.user.role !== "seeker") {
       return {
@@ -100,6 +103,53 @@ export async function getSeekerApplications(): Promise<{
     return {
       applications: [],
       error: "Could not connect to the application service.",
+    };
+  }
+}
+
+export async function checkSeekerApplication(jobId: string): Promise<{
+  hasApplied: boolean;
+  error?: string;
+}> {
+  try {
+    const requestHeaders = await headers();
+    const session = await auth.api.getSession({ headers: requestHeaders });
+    if (!session) return { hasApplied: false };
+    if (session.user.role !== "seeker") {
+      return {
+        hasApplied: false,
+        error: "Only job seekers can apply for jobs.",
+      };
+    }
+
+    const { token } = await auth.api.getToken({ headers: requestHeaders });
+    const query = new URLSearchParams({
+      userId: session.user.id,
+      jobId,
+    });
+    const response = await fetch(
+      `${process.env.SERVER_URL}/applications/check?${query.toString()}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      },
+    );
+
+    if (!response.ok) {
+      return {
+        hasApplied: false,
+        error: "Could not verify your application status.",
+      };
+    }
+
+    const result = (await response.json()) as {
+      data?: { hasApplied?: boolean };
+    };
+    return { hasApplied: result.data?.hasApplied === true };
+  } catch {
+    return {
+      hasApplied: false,
+      error: "Could not verify your application status.",
     };
   }
 }
