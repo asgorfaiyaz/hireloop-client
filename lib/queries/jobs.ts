@@ -49,7 +49,7 @@ function formatJob(job: ApiJob): JobListing {
   };
 }
 
-export async function getJobs(): Promise<{
+export async function getJobs(query?: string): Promise<{
   jobs: JobListing[];
   error?: string;
 }> {
@@ -57,7 +57,7 @@ export async function getJobs(): Promise<{
   if (!auth.success) return { jobs: [], error: auth.message };
 
   try {
-    const response = await fetch(JOBS_API_URL, {
+    const response = await fetch(`${JOBS_API_URL}?${query}`, {
       headers: { Authorization: `Bearer ${auth.token}` },
       cache: "no-store",
     });

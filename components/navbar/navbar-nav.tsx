@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 const navigationItems = [
   { label: "Home", href: "/", icon: Building2 },
-  { label: "Browse Jobs", href: "/discover-jobs", icon: BriefcaseBusiness },
+  { label: "Browse Jobs", href: "/browse-jobs", icon: BriefcaseBusiness },
 ] as const;
 
 function isActive(pathname: string, href: string) {
